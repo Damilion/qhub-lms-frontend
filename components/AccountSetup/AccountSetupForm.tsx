@@ -4,8 +4,8 @@ import FirstSetup from "./FirstSetup";
 import SecondSetup from "./SecondSetup";
 import { useRouter } from "next/navigation";
 import { UserInputs } from "@/lib/types";
-import { CREATE_ORGANIZATION } from "@/lib/graphql";
-import { useMutation } from "@apollo/client";
+import { CREATE_ORGANIZATION, GET_INDUSTRIES } from "@/lib/graphql";
+import { useMutation, useQuery } from "@apollo/client";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useUploadThing } from "@/utils/uploadthing";
@@ -19,6 +19,10 @@ const AccountSetupForm = ({ email }: { email: string }) => {
   const router = useRouter();
   const [organizationInput, { loading }] = useMutation(CREATE_ORGANIZATION);
 
+  const { data: industriesData, loading: industriesLoading } = useQuery(
+    GET_INDUSTRIES
+  );
+
   const { startUpload, isUploading } = useUploadThing("logoUploader");
 
   const [userInputs, setUserInputs] = useState<UserInputs>({
@@ -31,6 +35,7 @@ const AccountSetupForm = ({ email }: { email: string }) => {
     website: "",
     logo: "",
     employeeNo: "",
+    industryId: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +73,10 @@ const AccountSetupForm = ({ email }: { email: string }) => {
     country_id: number;
   }) => {
     setUserInputs({ ...userInputs, state: e.name });
+  };
+
+  const handleIndustryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setUserInputs({ ...userInputs, industryId: e.target.value });
   };
 
   const handleCountryChange = (e: {
@@ -122,6 +131,11 @@ const AccountSetupForm = ({ email }: { email: string }) => {
     const numberOfUsers = parseInt(parts[1], 10);
     const zipCode = parseFloat(userInputs.zipCode);
 
+    if (!userInputs.industryId) {
+      setError("Please select an industry");
+      return;
+    }
+
     try {
       const { data } = await organizationInput({
         variables: {
@@ -130,7 +144,7 @@ const AccountSetupForm = ({ email }: { email: string }) => {
             city: userInputs.city,
             country: userInputs.country,
             email,
-            industryId: "6849333ea3a2c0ccba897339",
+            industryId: userInputs.industryId,
             logo: userInputs.logo,
             name: userInputs.name,
             numberOfUsers,
@@ -180,6 +194,9 @@ const AccountSetupForm = ({ email }: { email: string }) => {
           handleStateChange={handleStateChange}
           countryId={countryId}
           handleZipCodeChange={handleZipCodeChange}
+          handleIndustryChange={handleIndustryChange}
+          industries={industriesData?.industries}
+          industriesLoading={industriesLoading}
         />
       )}
     </form>

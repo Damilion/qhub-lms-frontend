@@ -20,6 +20,9 @@ const FirstSetup = ({
   error,
   countryId,
   handleZipCodeChange,
+  handleIndustryChange,
+  industries,
+  industriesLoading,
 }: {
   userInputs: UserInputs;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,6 +32,9 @@ const FirstSetup = ({
   error: string | null;
   countryId: number | null;
   handleZipCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleIndustryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  industries?: { _id: string; type: string }[];
+  industriesLoading?: boolean;
 }) => {
   return (
     <div>
@@ -52,6 +58,25 @@ const FirstSetup = ({
             value={userInputs.address}
             onChange={handleChange}
           />
+        </LabelInputContainer>
+        <LabelInputContainer className="my-4">
+          <Label htmlFor="industry">Industry</Label>
+          <select
+            id="industry"
+            name="industry"
+            className="mt-1 block w-full border border-gray-300 bg-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={handleIndustryChange}
+            defaultValue=""
+            aria-disabled={industriesLoading}
+          >
+            <option value="">--Select an industry--</option>
+            {industries &&
+              industries.map((ind) => (
+                <option key={ind._id} value={ind._id}>
+                  {ind.type}
+                </option>
+              ))}
+          </select>
         </LabelInputContainer>
       </div>
       <div className="flex gap-4 items-center">

@@ -188,6 +188,15 @@ export const GET_ORGANIZATION_USERS = gql`
   }
 `;
 
+export const GET_INDUSTRIES = gql`
+  query GetIndustries {
+    industries {
+      _id
+      type
+    }
+  }
+`;
+
 export const GET_ORGANIZATION_COURSES = gql`
   query GetOrganizationCourses($organizationId: String!) {
     getOrganizationCourses(organizationId: $organizationId) {
