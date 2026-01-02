@@ -15,7 +15,7 @@ const useVerifyForm = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const value = e.target.value.replace(/\D/, "");
+    const value = e.target.value.replace(/[^a-zA-Z0-9]/, "");
     if (value.length > 1) return;
 
     const newCode = [...code];

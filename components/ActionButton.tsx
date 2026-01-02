@@ -14,13 +14,14 @@ export const Button = ({
 }) => {
   return (
     <button
-      className="w-full rounded-full text-sm open-sans py-2 md:py-3 bg-primary text-white flex justify-center items-center"
+      className="w-full rounded-full text-sm open-sans py-2 md:py-3 bg-primary text-white flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed"
       onClick={() => {
-        if (clickFunction) {
+        if (clickFunction && !loading) {
           clickFunction();
         }
       }}
       type={type}
+      disabled={loading}
     >
       {loading && <LuLoaderCircle className="animate-spin w-4 h-4 mr-2" />}
       {text}
